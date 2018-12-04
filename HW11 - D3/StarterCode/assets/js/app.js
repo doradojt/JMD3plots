@@ -11,7 +11,7 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-var svg = d3.select(".chart")
+var svg = d3.select(".scatterplot")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -20,7 +20,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // @TODO: YOUR CODE HERE!
-d3.csv("./data.csv", function(error, stateData) {
+d3.csv("data.csv", function(error, stateData) {
     if (error) return console.warn(error);
 
     console.log(stateData);
