@@ -20,25 +20,29 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // @TODO: YOUR CODE HERE!
-d3.csv("data.csv", function(error, stateData) {
-    if (error) return console.warn(error);
+d3.csv("assets/data/data.csv").then(function(stateData, error) {
+    if (error) console.log(error);
 
     console.log(stateData);
 
-    var states = stateData.map(data=>data.state);
-    console.log("states", states);
-    var stateAb = stateData.map(data=>data.abbr);
-    console.log("Abbr", stateAb);
-    var income = stateData.map(data=>data.income);
+    Object.entries(stateData).forEach(function([key,value]) {
+      console.log(key,value);
+    });
+
+    var states = Object.values(stateData).map(data=>data.state);
+    console.log("state", states);
+    var stateAb = Object.values(stateData).map(data=>data.abbr);
+    console.log("abbr", stateAb);
+    var income = Object.values(stateData).map(data=>data.income);
     console.log("income", income);
-    var obesity = stateData.map(data=>data.obesity);
+    var obesity = Object.values(stateData).map(data=>data.obesity);
     console.log("obesity", obesity);
-    var poverty = stateData.map(data=>data.poverty);
+    var poverty = Object.values(stateData).map(data=>data.poverty);
     console.log("poverty", poverty);
-    var smokes = stateData.map(data=>data.smokes);
+    var smokes = Object.values(stateData).map(data=>data.smokes);
     console.log("smokes", smokes);
 
-    stateData.forEach(
+    Object.values(stateData).forEach(
         function(data) {
             data.income = +data.income;
             data.obesity =+data.obesity;
