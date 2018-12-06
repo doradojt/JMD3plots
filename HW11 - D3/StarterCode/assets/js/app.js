@@ -6,9 +6,9 @@ function makeResponsive() {
     svgArea.remove();
   }
 
-  var svgWidth = window.innerWidth;
-  var svgHeight = window.innerHeight;
-
+  var svgWidth = window.innerWidth-400;
+  var svgHeight = window.innerHeight-200;
+//is there a better way to size this?
   var margin = {
     top: 20,
     right: 200,
@@ -28,6 +28,8 @@ function makeResponsive() {
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   var chosenXAxis = "poverty";
+  //attempted to add Ychosenaxis
+  //var chosenYAxis = "smokes";
 
   //function xScale(stateData, chosenXAxis) {
   //  var xLinearScale = d3.scaleLinear()
@@ -44,7 +46,13 @@ function makeResponsive() {
     
     return xLinearScale;
   }
+  //function yScale(stateData,chosenYAxis) {
+  //  var yLinearScale = d3.scaleLinear()
+  //    .domain([0,d3.max(stateData, data=>data[chosenYAxis])])
+  //    .range([0,width]);
 
+  //  return yLinearScale;
+  //}
   function renderAxes(newXScale,xAxis) {
     var bottomAxis = d3.axisBottom(newXScale);
     xAxis.transition()
@@ -53,6 +61,12 @@ function makeResponsive() {
 
     return xAxis;
   }
+  //function renderYAxes(newYScale,yAxis) {
+  //  var leftAxis = d3.axisLeft(newYScale);
+   // yAxis.transition()
+   //   .duration(1000)
+   //   .call(leftAxis);
+  //}
 
   function renderCircles(circlesGroup, newXScale, chosenXAxis) {
     circlesGroup.transition()
@@ -133,6 +147,7 @@ function makeResponsive() {
     
     var xLinearScale = xScale(stateData, chosenXAxis);
 
+    //var yLinearScale = yScale(stateData, chosenYAxis);
     var yLinearScale = d3.scaleLinear()
     .domain([18, d3.max(stateData, data => data.obesity)])
     .range([height, 0]);
@@ -147,6 +162,7 @@ function makeResponsive() {
 
     var yAxis = chartGroup.append("g")
       .classed("axisText", true)
+      //.attr("transform", `translate(0,${height})`)
       .call(leftAxis);
 
     var circlesGroup = chartGroup.selectAll("circle")
@@ -158,6 +174,11 @@ function makeResponsive() {
     .attr("r", 10)
     .attr("fill", "#c6dbef")
     .attr("opacity", ".9");
+    //trying to append text to a circle, below working?
+    //.append("text")
+     //.text(function(d) {return data.abbr})
+     //.attr("x")
+     //.attr("y");
     //.text(`${data.abbr}`); // Tried to append text to the circle
     //had to put tooltip here to make it work, wouldnt work with the other coding
     
