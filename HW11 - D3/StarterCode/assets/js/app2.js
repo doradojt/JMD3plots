@@ -194,13 +194,13 @@ function makeResponsive() {
     //  .enter()
     // var textgroup = circlesGroup.append("text")
      //.attr("class", "text")
-     var textgroup = circlesGroup.append("text")
+     circlesGroup.append("text")
      .attr("x", data => xLinearScale(data.poverty))
      .attr("y", data => yLinearScale(data.obesity))
      .attr('text-anchor', 'middle')
      .attr('alignment-baseline', 'middle')
      .style('font-size', '10')
-     .text(function(d) {return d.abbr;}).on("click",function(x1){
+     .text(function(data) {return data.abbr}).on("click",function(x1){
       toolTip.show(x1, this)
      }).on("mouseout",function(x1){
       toolTip.hide(x1)
@@ -283,7 +283,7 @@ function makeResponsive() {
           xAxis = renderXAxes(xLinearScale, xAxis);
 
           testgroup = renderXCircles(testgroup, xLinearScale, chosenXAxis);
-          textgroup = renderXCircles(textgroup,xLinearScale, chosenXAxis);
+          //textgroup = renderXCircles(textgroup,xLinearScale, chosenXAxis);
           
 
           //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
