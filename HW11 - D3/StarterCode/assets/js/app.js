@@ -6,8 +6,8 @@ function makeResponsive() {
     svgArea.remove();
   }
 
-  var svgWidth = window.innerWidth-400;
-  var svgHeight = window.innerHeight-200;
+  var svgWidth = parseInt(d3.select("#scatterplot").style("width"));
+  var svgHeight = svgWidth - (svgWidth / 3.9);
 //is there a better way to size this?
   var margin = {
     top: 20,
@@ -19,7 +19,7 @@ function makeResponsive() {
   var width = svgWidth - margin.left - margin.right;
   var height = svgHeight - margin.top - margin.bottom;
 
-  var svg = d3.select(".scatterplot")
+  var svg = d3.select("#scatterplot")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
@@ -168,12 +168,32 @@ function makeResponsive() {
     var circlesGroup = chartGroup.selectAll("circle")
     .data(stateData)
     .enter()
-    .append("circle")
+
+
+     var testgroup = circlesGroup.append("circle")
     .attr("cx", data => xLinearScale(data.poverty))
     .attr("cy", data => yLinearScale(data.obesity))
     .attr("r", 10)
     .attr("fill", "#c6dbef")
-    .attr("opacity", ".9");
+    .attr("opacity", ".5");
+
+    // var circlesText = chartGroup.selectAll("circle")
+    //  .data(stateData)
+    //  .enter()
+
+
+     var textgroup = circlesGroup.append("text")
+     //.attr("class", "text")
+     .attr("x", data => xLinearScale(data.poverty))
+     .attr("y", data => yLinearScale(data.obesity))
+     .attr('text-anchor', 'middle')
+     .attr('alignment-baseline', 'middle')
+     .style('font-size', '10')
+     .text(function(d) {return d.abbr;}).on("click",function(x1){
+      toolTip.show(x1, this)
+     }).on("mouseout",function(x1){
+      toolTip.hide(x1)
+     });
     //trying to append text to a circle, below working?
     //.append("text")
      //.text(function(d) {return data.abbr})
@@ -189,9 +209,10 @@ function makeResponsive() {
         return (`${data.state}<br>Y-Axis: ${data.obesity}%<br>X-Axis: ${data[chosenXAxis]}%`);
       });
 
+
     chartGroup.call(toolTip);
 
-    circlesGroup.on("click", function(data) {
+    testgroup.on("click", function(data) {
       toolTip.show(data, this);
     })
       // onmouseout event
@@ -238,7 +259,7 @@ function makeResponsive() {
         
           xAxis = renderAxes(xLinearScale, xAxis);
 
-          circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+          testgroup = renderCircles(testgroup, xLinearScale, chosenXAxis);
 
           //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
