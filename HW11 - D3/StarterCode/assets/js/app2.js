@@ -46,8 +46,8 @@ function makeResponsive() {
       .range([0,width]);
     
     return xLinearScale;
-
   }
+
   function yScale(stateData,chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
       .domain([15,d3.max(stateData, data=>data[chosenYAxis])])
@@ -73,7 +73,7 @@ function makeResponsive() {
     return yAxis;
   }
    
-  function renderXCircles(circlesGroup,newXScale, chosenXAxis) {
+  function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
     circlesGroup.transition()
       .duration(1000)
       .attr("cx", data=>newXScale(data[chosenXAxis]))
@@ -81,7 +81,7 @@ function makeResponsive() {
     return circlesGroup;
   }
 
-  function renderYCircles(circlesGroup,newYScale, chosenYAxis) {
+  function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
     circlesGroup.transition()
       .duration(1000)
       //.attr("cx", data=>newXScale(data[chosenXAxis]))
@@ -194,7 +194,7 @@ function makeResponsive() {
     //  .enter()
     // var textgroup = circlesGroup.append("text")
      //.attr("class", "text")
-     circlesGroup.append("text")
+     var textgroup = circlesGroup.append("text")
      .attr("x", data => xLinearScale(data.poverty))
      .attr("y", data => yLinearScale(data.obesity))
      .attr('text-anchor', 'middle')
@@ -241,12 +241,14 @@ function makeResponsive() {
       .attr("x",0)
       .attr("y",20)
       .attr("value", "poverty")
+      .attr("dx","1em")
       .classed("active", true)
       .text("In Poverty (%)");
 
     var ageLabel = labelsGroup.append("text")
       .attr("x",0)
       .attr("y",40)
+      .attr("dx","1em")
       .attr("value", "age")
       .classed("active", true)
       .text("Age (Median)");
@@ -281,7 +283,8 @@ function makeResponsive() {
           xAxis = renderXAxes(xLinearScale, xAxis);
 
           testgroup = renderXCircles(testgroup, xLinearScale, chosenXAxis);
-          //textgroup = renderCircles(textgroup, xLinearScale, chosenXAxis);
+          textgroup = renderXCircles(textgroup,xLinearScale, chosenXAxis);
+          
 
           //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
@@ -306,10 +309,10 @@ function makeResponsive() {
     labelsBGroup.selectAll("text")
       .on("click", function() {
         
-        var valuetwo = d3.select(this).attr("value");
-        if (valuetwo !== chosenYAxis) {
+        var value = d3.select(this).attr("value");
+        if (value !== chosenYAxis) {
           
-          chosenYAxis = valuetwo;
+          chosenYAxis = value;
           console.log(chosenYAxis)
 
           yLinearScale = yScale(stateData, chosenYAxis);
