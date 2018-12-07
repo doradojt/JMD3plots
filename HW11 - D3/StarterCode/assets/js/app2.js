@@ -306,15 +306,15 @@ function makeResponsive() {
     labelsBGroup.selectAll("text")
       .on("click", function() {
         
-        var value = d3.select(this).attr("value");
-        if (value !== chosenYAxis) {
+        var valuetwo = d3.select(this).attr("value");
+        if (valuetwo !== chosenYAxis) {
           
-          chosenYAxis = value;
+          chosenYAxis = valuetwo;
           console.log(chosenYAxis)
 
-          YLinearScale = yScale(stateData, chosenYAxis);
+          yLinearScale = yScale(stateData, chosenYAxis);
         
-          YAxis = renderYAxes(yLinearScale, yAxis);
+          yAxis = renderYAxes(yLinearScale, yAxis);
 
           testgroup = renderYCircles(testgroup, yLinearScale, chosenYAxis);
           //textgroup = renderCircles(textgroup, xLinearScale, chosenXAxis);
