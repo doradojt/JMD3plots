@@ -44,14 +44,16 @@ function makeResponsive() {
     var xLinearScale = d3.scaleLinear()
       .domain([8,d3.max(stateData, data=>data[chosenXAxis])])
       .range([0,width]);
+    console.log(typeof xLinearScale);
     
     return xLinearScale;
   }
 
   function yScale(stateData,chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-      .domain([15,d3.max(stateData, data=>data[chosenYAxis])])
+      .domain([d3.min(stateData, data=>data[chosenYAxis]),d3.max(stateData, data=>data[chosenYAxis])])
       .range([height, 0]);
+    console.log(typeof yLinearScale);
 
     return yLinearScale;
   }
@@ -72,21 +74,43 @@ function makeResponsive() {
 
     return yAxis;
   }
-   
-  function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
+  function renderCircles(circlesGroup, newXScale, chosenXAxis) {
     circlesGroup.transition()
       .duration(1000)
       .attr("cx", data=>newXScale(data[chosenXAxis]))
       //.attr("cy", data=>newYScale(data[chosenYAxis]));
     return circlesGroup;
   }
+   
+  function renderXCircles(testGroup, newXScale, chosenXAxis) {
+    testGroup.transition()
+      .duration(1000)
+      .attr("cx", data=>newXScale(data[chosenXAxis]))
+      //.attr("cy", data=>newYScale(data[chosenYAxis]));
+    return testGroup;
+  }
+  function renderXText(textGroup, newXScale, chosenXAxis) {
+    textGroup.transition()
+      .duration(1000)
+      .attr("x", data=>newXScale(data[chosenXAxis]))
+      //.attr("cy", data=>newYScale(data[chosenYAxis]));
+    return textGroup;
+  }
 
-  function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
-    circlesGroup.transition()
+  function renderYCircles(testGroup, newYScale, chosenYAxis) {
+    testGroup.transition()
       .duration(1000)
       //.attr("cx", data=>newXScale(data[chosenXAxis]))
       .attr("cy", data=>newYScale(data[chosenYAxis]))
-    return circlesGroup;
+    return testGroup;
+  }
+
+  function renderYText(textGroup, newYScale, chosenYAxis) {
+    textGroup.transition()
+      .duration(1000)
+      //.attr("cx", data=>newXScale(data[chosenXAxis]))
+      .attr("y", data=>newYScale(data[chosenYAxis]))
+    return textGroup;
   }
   //function updateToolTip(chosenXAxis, circlesGroup) {
     
@@ -180,11 +204,13 @@ function makeResponsive() {
     var circlesGroup = chartGroup.selectAll("circle")
     .data(stateData)
     .enter()
+    .append('g')
+    .attr("class", "point");
 
 
-     var testgroup = circlesGroup.append("circle")
+     var testGroup = circlesGroup.append("circle")
     .attr("cx", data => xLinearScale(data.poverty))
-    .attr("cy", data => yLinearScale(data.obesity))
+    .attr("cy", data => yLinearScale(data.obesity)) // data.obesity
     .attr("r", 10)
     .attr("fill", "#c6dbef")
     .attr("opacity", ".5");
@@ -194,9 +220,9 @@ function makeResponsive() {
     //  .enter()
     // var textgroup = circlesGroup.append("text")
      //.attr("class", "text")
-     circlesGroup.append("text")
+     var textGroup = circlesGroup.append("text")
      .attr("x", data => xLinearScale(data.poverty))
-     .attr("y", data => yLinearScale(data.obesity))
+     .attr("y", data => yLinearScale(data.obesity)) // data.obesity
      .attr('text-anchor', 'middle')
      .attr('alignment-baseline', 'middle')
      .style('font-size', '10')
@@ -223,7 +249,7 @@ function makeResponsive() {
 
     chartGroup.call(toolTip);
 
-    testgroup.on("click", function(data) {
+    testGroup.on("click", function(data) {
       toolTip.show(data, this);
     })
       // onmouseout event
@@ -231,13 +257,13 @@ function makeResponsive() {
         toolTip.hide(data);
       });
 
-    var labelsGroup = chartGroup.append("g")
+    var labelsXGroup = chartGroup.append("g")
       .attr("transform", `translate(${width/2}, ${height + 20})`);
 
-    var labelsBGroup = chartGroup.append("g")
+    var labelsYGroup = chartGroup.append("g")
       
 
-    var povertyLabel = labelsGroup.append("text")
+    var povertyLabel = labelsXGroup.append("text")
       .attr("x",0)
       .attr("y",20)
       .attr("value", "poverty")
@@ -245,15 +271,15 @@ function makeResponsive() {
       .classed("active", true)
       .text("In Poverty (%)");
 
-    var ageLabel = labelsGroup.append("text")
+    var ageLabel = labelsXGroup.append("text")
       .attr("x",0)
       .attr("y",40)
       .attr("dx","1em")
       .attr("value", "age")
-      .classed("active", true)
+      .classed("inactive", true)
       .text("Age (Median)");
 
-    var obesityLabel = labelsBGroup.append("text")
+    var obesityLabel = labelsYGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin.left)
       .attr("x", 0 - (height/2))
@@ -261,16 +287,16 @@ function makeResponsive() {
       .classed("active", true)
       .text("Obesity (%)");
 
-    var smokesLabel = labelsBGroup.append("text")
+    var smokesLabel = labelsYGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 20 - margin.left)
       .attr("x", 0 - (height/2))
       .attr("dy", "1em")
-      .classed("active", true)
+      .classed("inactive", true)
       .text("Smokes");
     //var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
-    labelsGroup.selectAll("text")
+    labelsXGroup.selectAll("text")
       .on("click", function() {
         
         var value = d3.select(this).attr("value");
@@ -278,12 +304,13 @@ function makeResponsive() {
           
           chosenXAxis = value;
           console.log(chosenXAxis)
+          console.log(chosenYAxis)
           xLinearScale = xScale(stateData, chosenXAxis);
         
           xAxis = renderXAxes(xLinearScale, xAxis);
 
-          testgroup = renderXCircles(testgroup, xLinearScale, chosenXAxis);
-          //textgroup = renderXCircles(textgroup,xLinearScale, chosenXAxis);
+          testGroup = renderXCircles(testGroup, xLinearScale, chosenXAxis);
+          textGroup = renderXText(textGroup, xLinearScale, chosenXAxis);
           
 
           //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
@@ -306,25 +333,27 @@ function makeResponsive() {
           }
         }
     });   
-    labelsBGroup.selectAll("text")
+    labelsYGroup.selectAll("text")
       .on("click", function() {
         
         var value = d3.select(this).attr("value");
         if (value !== chosenYAxis) {
           
+          console.log(value)
           chosenYAxis = value;
           console.log(chosenYAxis)
+
 
           yLinearScale = yScale(stateData, chosenYAxis);
         
           yAxis = renderYAxes(yLinearScale, yAxis);
 
-          testgroup = renderYCircles(testgroup, yLinearScale, chosenYAxis);
-          //textgroup = renderCircles(textgroup, xLinearScale, chosenXAxis);
+          testGroup = renderYCircles(testGroup, yLinearScale, chosenYAxis);
+          textGroup = renderYText(textGroup, yLinearScale, chosenYAxis);
 
           //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
-          if (chosenXAxis === "obesity") {
+          if (chosenYAxis === "obesity") {
             obesityLabel
               .classed("active", true)
               .classed("inactive", false);
