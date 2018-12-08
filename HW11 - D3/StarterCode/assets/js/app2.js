@@ -8,7 +8,7 @@ function makeResponsive() {
 
   var svgWidth = parseInt(d3.select("#scatterplot").style("width"));
   var svgHeight = svgWidth - (svgWidth / 3.9);
-//is there a better way to size this?
+
   var margin = {
     top: 20,
     right: 200,
@@ -29,17 +29,7 @@ function makeResponsive() {
 
   var chosenXAxis = "poverty";
   var chosenYAxis = "obesity";
-  //attempted to add Ychosenaxis
-  //var chosenYAxis = "smokes";
 
-  //function xScale(stateData, chosenXAxis) {
-  //  var xLinearScale = d3.scaleLinear()
-  //    .domain([d3.min(stateData, data=>data[chosenXAxis]),
-  //      d3.max(stateData, data=>data[chosenXAxis])
-  //    ])
-  //   .range([0,width]);
-  // return xLinearScale;
-  //}  Took this out because I couldnt get the scale right, hard coded
   function xScale(stateData, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
       .domain([d3.min(stateData, data=> data[chosenXAxis])-1,d3.max(stateData, data=>data[chosenXAxis])+1])
@@ -78,7 +68,7 @@ function makeResponsive() {
     circlesGroup.transition()
       .duration(1000)
       .attr("cx", data=>newXScale(data[chosenXAxis]))
-      //.attr("cy", data=>newYScale(data[chosenYAxis]));
+      
     return circlesGroup;
   }
    
@@ -86,21 +76,21 @@ function makeResponsive() {
     testGroup.transition()
       .duration(1000)
       .attr("cx", data=>newXScale(data[chosenXAxis]))
-      //.attr("cy", data=>newYScale(data[chosenYAxis]));
+     
     return testGroup;
   }
   function renderXText(textGroup, newXScale, chosenXAxis) {
     textGroup.transition()
       .duration(1000)
       .attr("x", data=>newXScale(data[chosenXAxis]))
-      //.attr("cy", data=>newYScale(data[chosenYAxis]));
+    
     return textGroup;
   }
 
   function renderYCircles(testGroup, newYScale, chosenYAxis) {
     testGroup.transition()
       .duration(1000)
-      //.attr("cx", data=>newXScale(data[chosenXAxis]))
+     
       .attr("cy", data=>newYScale(data[chosenYAxis]))
     return testGroup;
   }
@@ -108,35 +98,11 @@ function makeResponsive() {
   function renderYText(textGroup, newYScale, chosenYAxis) {
     textGroup.transition()
       .duration(1000)
-      //.attr("cx", data=>newXScale(data[chosenXAxis]))
+     
       .attr("y", data=>newYScale(data[chosenYAxis]))
     return textGroup;
   }
-  //function updateToolTip(chosenXAxis, circlesGroup) {
-    
-  // if(chosenXAxis === "poverty") {
-  //    var label = "In Poverty (%)";
-  //  }
-  //  else {
-  //    var label = "Age (Median)";
-  //    }
-  //  var toolTip = d3.tip()
-  //    .attr("class", "tooltip")
-  //    .offset([80, -60])
-  ///    .html(function(data) {
-  //      return (`${data.abbr}<br>${label} ${data[chosenXAxis]}`);
-  //    });
 
-   // circlesGroup.call(toolTip);
-
-   // circlesGroup.on("mouseover", function(data) {
-   //   toolTip.show(data);
-   // })
-   //   .on("mouseout", function(data,index) {
-  //      toolTip.hide(data);
-   //   });
-   // return circlesGroup;
-  //}
 
   // @TODO: YOUR CODE HERE!
   d3.csv("assets/data/data.csv").then(function(stateData, error) {
@@ -185,9 +151,7 @@ function makeResponsive() {
     var xLinearScale = xScale(stateData, chosenXAxis);
 
     var yLinearScale = yScale(stateData, chosenYAxis);
-    //var yLinearScale = d3.scaleLinear()
-    //.domain([18, d3.max(stateData, data => data.obesity)])
-    //.range([height, 0]);
+ 
 
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
@@ -215,11 +179,7 @@ function makeResponsive() {
     .attr("fill", "#c6dbef")
     .attr("opacity", ".5");
     
-    // var circlesText = chartGroup.selectAll("circle")
-    //  .data(stateData)
-    //  .enter()
-    // var textgroup = circlesGroup.append("text")
-     //.attr("class", "text")
+ 
      var textGroup = circlesGroup.append("text")
      .attr("x", data => xLinearScale(data.poverty))
      .attr("y", data => yLinearScale(data.obesity)) // data.obesity
@@ -231,13 +191,7 @@ function makeResponsive() {
      }).on("mouseout",function(x1){
       toolTip.hide(x1)
      });
-    //trying to append text to a circle, below working?
-    //.append("text")
-     //.text(function(d) {return data.abbr})
-     //.attr("x")
-     //.attr("y");
-    //.text(`${data.abbr}`); // Tried to append text to the circle
-    //had to put tooltip here to make it work, wouldnt work with the other coding
+    
     
     var toolTip = d3.tip()
       .attr("class", "tooltip")
@@ -252,7 +206,7 @@ function makeResponsive() {
     testGroup.on("click", function(data) {
       toolTip.show(data, this);
     })
-      // onmouseout event
+   
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
@@ -296,7 +250,7 @@ function makeResponsive() {
       .attr("value", "smokes")
       .classed("inactive", true)
       .text("Smokes");
-    //var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
 
     labelsXGroup.selectAll("text")
       .on("click", function() {
@@ -315,7 +269,7 @@ function makeResponsive() {
           textGroup = renderXText(textGroup, xLinearScale, chosenXAxis);
           
 
-          //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+        
 
           if (chosenXAxis === "poverty") {
             povertyLabel
@@ -353,7 +307,6 @@ function makeResponsive() {
           testGroup = renderYCircles(testGroup, yLinearScale, chosenYAxis);
           textGroup = renderYText(textGroup, yLinearScale, chosenYAxis);
 
-          //circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
           if (chosenYAxis === "obesity") {
             obesityLabel
