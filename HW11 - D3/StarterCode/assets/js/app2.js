@@ -42,7 +42,7 @@ function makeResponsive() {
   //}  Took this out because I couldnt get the scale right, hard coded
   function xScale(stateData, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
-      .domain([8,d3.max(stateData, data=>data[chosenXAxis])])
+      .domain([d3.min(stateData, data=> data[chosenXAxis])-1,d3.max(stateData, data=>data[chosenXAxis])+1])
       .range([0,width]);
     console.log(typeof xLinearScale);
     
@@ -51,7 +51,7 @@ function makeResponsive() {
 
   function yScale(stateData,chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-      .domain([d3.min(stateData, data=>data[chosenYAxis]),d3.max(stateData, data=>data[chosenYAxis])])
+      .domain([d3.min(stateData, data=>data[chosenYAxis])-1, d3.max(stateData, data=>data[chosenYAxis])+1])
       .range([height, 0]);
     console.log(typeof yLinearScale);
 
@@ -284,6 +284,7 @@ function makeResponsive() {
       .attr("y", 0 - margin.left)
       .attr("x", 0 - (height/2))
       .attr("dy","1em")
+      .attr("value", "obesity")
       .classed("active", true)
       .text("Obesity (%)");
 
@@ -292,6 +293,7 @@ function makeResponsive() {
       .attr("y", 20 - margin.left)
       .attr("x", 0 - (height/2))
       .attr("dy", "1em")
+      .attr("value", "smokes")
       .classed("inactive", true)
       .text("Smokes");
     //var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
